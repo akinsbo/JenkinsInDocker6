@@ -19,7 +19,11 @@ RUN chown -R jenkins:jenkins /var/cache/jenkins
 
 USER jenkins
 
+COPY plugins.txt /usr/share/jenkins/plugins.txt
+RUN /usr/local/bin/plugins.sh /usr/share/jenkins/plugins.txt
+
 ENV JAVA_OPTS="-Xmx8192m \
     -Djava.util.logging.config.file=/var/jenkins_home/log.properties \
     -Dhudson.footerURL=http://maryboye.com"
-ENV JENKINS_OPTS="--handlerCountMax=300 --logfile=/var/log/jenkins/jenkins.log"
+ENV JENKINS_OPTS="--handlerCountMax=300 --logfile=/var/log/jenkins/jenkins.log \
+    --webroot=/var/cache/jenkins/war"

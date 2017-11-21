@@ -25,3 +25,8 @@ docker exec jenkins-master cat /var/jenkins_home/secrets/initialAdminPassword
 # run nginx
 docker build -t myjenkinsnginx jenkins-nginx/.
 docker run --name=jenkins-data myjenkinsdata
+docker stop jenkins-nginx
+docker stop jenkins-master
+docker rm jenkins-nginx
+docker rm jenkins-master
+docker run -p 83:80 --name=jenkins-nginx --link jenkins-master:jenkins-master -d myjenkinsnginx

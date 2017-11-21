@@ -1,0 +1,43 @@
+#version: "3.2"
+#
+#services:
+#    jenkinsdata:
+#        build: jenkins-data
+#        volumes:
+#            - data-volume:/var/log/jenkins
+##            - data-volume:/var/jenkins_home
+#
+#    jenkinsmaster:
+#        build: jenkins-master
+#        volumes:
+#            - ./data-volume:/var/log/jenkins
+#        ports:
+#            - "50004:50000"
+#
+#    jenkinsnginx:
+#        build: jenkins-nginx
+#        ports:
+#            - "84:80"
+##        depends_on:
+##            - jenkinsmaster
+#        links:
+#            #set the url of access of jenkins-master
+#            - jenkinsmaster:jenkins-master
+#
+#volumes:
+#    data-volume:
+
+jenkinsdata:
+ build: jenkins-data
+jenkinsmaster:
+ build: jenkins-master
+ volumes_from:
+  - jenkinsdata
+ ports:
+  - "50005:50000"
+jenkinsnginx:
+ build: jenkins-nginx
+ ports:
+  - "85:80"
+ links:
+  - jenkinsmaster:jenkins-master
