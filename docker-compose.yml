@@ -29,12 +29,15 @@
 
 jenkinsdata:
  build: jenkins-data
+ restart: unless-stopped
+
 jenkinsmaster:
  build: jenkins-master
  volumes_from:
   - jenkinsdata
  ports:
   - "50005:50000"
+
 jenkinsnginx:
  build: jenkins-nginx
  ports:

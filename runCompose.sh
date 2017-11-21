@@ -1,4 +1,4 @@
 docker-compose build
 docker-compose up
 
-docker-compose rm jenkinsmaster jenkinsgninx
+docker-compose rm jenkinsmaster jenkinsngninx
