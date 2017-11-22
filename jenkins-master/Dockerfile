@@ -30,4 +30,4 @@ ENV JENKINS_OPTS="--handlerCountMax=300 \
 COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
 RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
 
-RUN cat /var/jenkins_home/secrets/initialAdminPassword
+#RUN cat /var/jenkins_home/secrets/initialAdminPassword
