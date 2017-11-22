@@ -21,8 +21,8 @@ USER jenkins
 #set memory with Xmx and get rid of admin password setup with runSetup = false
 ENV JAVA_OPTS="-Xmx8192m \
     -Djava.util.logging.config.file=/var/jenkins_home/log.properties \
-    -Dhudson.footerURL=http://maryboye.com"
-#    -Djenkins.install.runSetupWizard=false"
+    -Dhudson.footerURL=http://maryboye.com \
+    -Djenkins.install.runSetupWizard=false"
 ENV JENKINS_OPTS="--handlerCountMax=300 \
     --logfile=/var/log/jenkins/jenkins.log \
     --webroot=/var/cache/jenkins/war"
@@ -30,4 +30,4 @@ ENV JENKINS_OPTS="--handlerCountMax=300 \
 COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
 RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
 
-RUN /var/jenkins_home/secrets/initialAdminPassword
+RUN cat /var/jenkins_home/secrets/initialAdminPassword
