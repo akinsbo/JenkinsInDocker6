@@ -1,3 +1,4 @@
+
 # To change this license header, choose License Headers in Project Properties.
 # To change this template file, choose Tools | Templates
 # and open the template in the editor.
@@ -5,6 +6,7 @@
 FROM jenkins/jenkins:2.73.3
 MAINTAINER Olaolu Akinsete
 LABEL build_tag=com.maryboye.video/redis:v0.1
+
 
 # setup log folder
 USER root
@@ -18,16 +20,17 @@ RUN chown -R jenkins:jenkins /var/cache/jenkins
 
 USER jenkins
 
-#set memory with Xmx and get rid of admin password setup with runSetup = false
+#The contents of plugins.txt get passed to xargs which then feeds them to
+#install-plugins.sh as command-line parameters
+#COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
+#RUN xargs /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
+COPY plugins.txt /usr/share/jenkins/plugins.txt
+RUN /usr/local/bin/plugins.sh < /usr/share/jenkins/plugins.txt
+
 ENV JAVA_OPTS="-Xmx8192m \
     -Djava.util.logging.config.file=/var/jenkins_home/log.properties \
     -Dhudson.footerURL=http://maryboye.com"
-#    -Djenkins.install.runSetupWizard=false"
-ENV JENKINS_OPTS="--handlerCountMax=300 \
-    --logfile=/var/log/jenkins/jenkins.log \
+ENV JENKINS_OPTS="--handlerCountMax=300 --logfile=/var/log/jenkins/jenkins.log \
     --webroot=/var/cache/jenkins/war"
 
-COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
-RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
-
-RUN /var/jenkins_home/secrets/initialAdminPassword
+RUN cat /var/jenkins_home/secrets/initialAdminPassword
