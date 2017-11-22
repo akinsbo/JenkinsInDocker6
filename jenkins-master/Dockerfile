@@ -78,8 +78,7 @@ VOLUME /var/jenkins_home
 # `/usr/share/jenkins/ref/` contains all reference configuration we want
 # to set on a fresh new installation. Use it to bundle additional plugins
 # or config file with your custom jenkins Docker image.
-RUN mkdir -p /usr/share/jenkins/ref/init.groovy.d
-
+RUN mkdir -p /usr/share/jenkins/ref/init.groovy.ds
 # could use ADD but this one does not check Last-Modified header neither does it allow to control checksum 
 # see https://github.com/docker/docker/issues/8331
 RUN curl -fsSL ${JENKINS_URL} -o /usr/share/jenkins/jenkins.war \
@@ -105,3 +104,16 @@ USER jenkins
 
 # Set Tini as the entry point to manage zombie processes
 ENTRYPOINT ["/bin/tini", "--", "/usr/local/bin/jenkins.sh"]
+
+COPY jenkins-support /usr/local/bin/jenkins-support
+COPY jenkins.sh /usr/local/bin/jenkins.sh
+
+# from a derived Dockerfile, can use `RUN plugins.sh active.txt` to setup /usr/share/jenkins/ref/plugins from a support bundle
+COPY plugins.sh /usr/local/bin/plugins.sh
+COPY install-plugins.sh /usr/local/bin/install-plugins.sh
+
+# `/usr/share/jenkins/ref/` contains all reference configuration we want 
+# to set on a fresh new installation. Use it to bundle additional plugins 
+# or config file with your custom jenkins Docker image.
+RUN mkdir -p /usr/share/jenkins/ref/init.groovy.d
+COPY init.groovy /usr/share/jenkins/ref/init.groovy.d/tcp-slave-agent-port.groovy
