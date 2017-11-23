@@ -29,7 +29,7 @@
 
 jenkinsdata:
  build: jenkins-data
- restart: unless-stopped
+# restart: unless-stopped
 
 jenkinsmaster:
  build: jenkins-master
@@ -44,3 +44,4 @@ jenkinsnginx:
   - "85:80"
  links:
   - jenkinsmaster:jenkins-master
+       # set the url of the link to http://jenkinsmaster:8080 (for conf discovery)
