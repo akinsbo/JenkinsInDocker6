@@ -27,21 +27,24 @@
 #volumes:
 #    data-volume:
 
-jenkinsdata:
+data:
  build: jenkins-data
 # restart: unless-stopped
 
-jenkinsmaster:
+master:
  build: jenkins-master
  volumes_from:
   - jenkinsdata
  ports:
   - "50005:50000"
 
-jenkinsnginx:
+nginx:
  build: jenkins-nginx
  ports:
   - "85:80"
  links:
   - jenkinsmaster:jenkins-master
        # set the url of the link to http://jenkinsmaster:8080 (for conf discovery)
+
+slave:
+  build: jenkins-slave
