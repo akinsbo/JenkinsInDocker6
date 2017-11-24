@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM debian:stretch
 MAINTAINER Olaolu Akinsete
 
 ENV JAVA_VERSION 8u151
@@ -7,13 +7,11 @@ ENV CA_CERTIFICATES_JAVA_VERSION 20170531+nmu1
 
 # openssh-server - necessary so that Jenkins can reach out and connect to our running slave container
 RUN apt-get update && apt-get install -y --no-install-recommends \
-                ca-certificates-java="$CA_CERTIFICATES_JAVA_VERSION" \
                 git \
 		openssh-server \
                 openjdk-8-jdk="$JAVA_DEBIAN_VERSION" \
 		wget \
                 && rm -rf /var/lib/apt/lists/*
-
 
 # Create Jenkins User
 RUN useradd jenkins -m -s /bin/bash
@@ -21,7 +19,7 @@ RUN useradd jenkins -m -s /bin/bash
 ## Add public key for Jenkins login
 RUN mkdir /home/jenkins/.ssh
 #Copy authorized keys to mactch key from Jenkins master when connection is made.
-# This removes the need to create a password for this user, reducing risk on a 
+# This removes the need to create a password for this user, reducing risk on a
 # large farm
 COPY /files/authorized_keys /home/jenkins/.ssh/authorized_keys
 RUN chown -R jenkins /home/jenkins

@@ -34,7 +34,7 @@ data:
 master:
  build: jenkins-master
  volumes_from:
-  - jenkinsdata
+  - data
  ports:
   - "50005:50000"
 
@@ -43,7 +43,7 @@ nginx:
  ports:
   - "85:80"
  links:
-  - jenkinsmaster:jenkins-master
+  - master:jenkins-master
        # set the url of the link to http://jenkinsmaster:8080 (for conf discovery)
 
 slave:
