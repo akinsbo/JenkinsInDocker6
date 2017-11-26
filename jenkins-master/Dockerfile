@@ -38,12 +38,12 @@ ARG agent_port=50000
  #jenkins version being bundled in this docker image
 ARG JENKINS_VERSION
 ENV JENKINS_VERSION ${JENKINS_VERSION:-2.60.3}
-
 # jenkins.war checksum, download will be validated using it
+#ARG JENKINS_SHA=fcfb932a84ce03795abbf51ae7799439278155b0d42242d1d79a187034649fc8 jenkins.war
 ARG JENKINS_SHA=2d71b8f87c8417f9303a73d52901a59678ee6c0eefcf7325efed6035ff39372a
 # Can be used to customize where jenkins.war get downloaded from
 RUN echo ${JENKINS_VERSION}
-
+#ARG JENKINS_URL=http://mirrors.jenkins.io/war-stable/${JENKINS_VERSION}/jenkins.war
 ARG JENKINS_URL=https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/${JENKINS_VERSION}/jenkins-war-${JENKINS_VERSION}.war
 RUN echo ${JENKINS_URL}
 
@@ -53,10 +53,10 @@ ENV JENKINS_UC https://updates.jenkins.io
 ENV JENKINS_UC_EXPERIMENTAL=https://updates.jenkins.io/experimental
 ENV COPY_REFERENCE_FILE_LOG $JENKINS_HOME/copy_reference_file.logs
 #set memory with Xmx and get rid of admin password setup with runSetup = false
+#    -Djenkins.install.runSetupWizard=false \
 ENV JAVA_OPTS="-Xmx8192m \
     -Djava.util.logging.config.file=/var/jenkins_home/log.properties \
-    -Dhudson.footerURL=http://maryboye.com \
-    -Djenkins.install.runSetupWizard=false"
+    -Dhudson.footerURL=http://maryboye.com"
 ENV JENKINS_OPTS="--handlerCountMax=300 \
     --logfile=/var/log/jenkins/jenkins.log \
     --webroot=/var/cache/jenkins/war"

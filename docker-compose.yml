@@ -45,6 +45,8 @@ nginx:
  links:
   - master:jenkins-master
        # set the url of the link to http://jenkinsmaster:8080 (for conf discovery)
-
+ volumes:
+  - ./jenkins-nginx/logs/:/var/log/nginx/
+ command: [nginx-debug, '-g', 'daemon off;']
 slave:
   build: jenkins-slave
