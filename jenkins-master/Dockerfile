@@ -23,7 +23,7 @@ RUN /var/lib/dpkg/info/ca-certificates-java.postinst configure
 # Install tini
 ENV TINI_VERSION 0.14.0
 ENV TINI_SHA 6c41ec7d33e857d4779f14d9c74924cab0c7973485d2972419a3b7c7620ff5fd
-# Use tini as subreaper in Docker container to adopt zombie processes 
+# Use tini as subreaper in Docker container to adopt zombie processes
 RUN curl -fsSL https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini-static-amd64 -o /bin/tini && chmod +x /bin/tini \
   && echo "$TINI_SHA  /bin/tini" | sha256sum -c -
 
@@ -66,7 +66,7 @@ ENV JENKINS_OPTS="--handlerCountMax=300 \
 # If you bind mount a volume from the host or a data container,
 # ensure you use the same uid
 # Jenkins is run with user `jenkins`, uid = 1000
-# If you bind mount a volume from the host or a data container, 
+# If you bind mount a volume from the host or a data container,
 # ensure you use the same uid
 RUN groupadd -g ${gid} ${group} \
     && useradd -d "$JENKINS_HOME" -u ${uid} -g ${gid} -m -s /bin/bash ${user}
@@ -77,7 +77,7 @@ VOLUME /var/jenkins_home
 # to set on a fresh new installation. Use it to bundle additional plugins
 # or config file with your custom jenkins Docker image.
 RUN mkdir -p /usr/share/jenkins/ref/init.groovy.ds
-# could use ADD but this one does not check Last-Modified header neither does it allow to control checksum 
+# could use ADD but this one does not check Last-Modified header neither does it allow to control checksum
 # see https://github.com/docker/docker/issues/8331
 RUN curl -fsSL ${JENKINS_URL} -o /usr/share/jenkins/jenkins.war \
   && echo "${JENKINS_SHA}  /usr/share/jenkins/jenkins.war" | sha256sum -c -
@@ -107,11 +107,23 @@ COPY install-plugins.sh /usr/local/bin/install-plugins.sh
 RUN chmod +x /usr/local/bin/plugins.sh
 RUN chmod +x /usr/local/bin/jenkins.sh
 
-# `/usr/share/jenkins/ref/` contains all reference configuration we want 
-# to set on a fresh new installation. Use it to bundle additional plugins 
+# `/usr/share/jenkins/ref/` contains all reference configuration we want
+# to set on a fresh new installation. Use it to bundle additional plugins
 # or config file with your custom jenkins Docker image.
 RUN mkdir -p /usr/share/jenkins/ref/init.groovy.d
 COPY init.groovy /usr/share/jenkins/ref/init.groovy.d/tcp-slave-agent-port.groovy
+
+
+# Copy in the Docker certs, we'll use /usr/local/etc for them
+COPY certs/ca-key.pem /usr/local/etc/jenkins/certs/ca-key.pem
+COPY certs/ca.pem /usr/local/etc/jenkins/certs/ca.pem
+COPY certs/cert.pem /usr/local/etc/jenkins/certs/cert.pem
+COPY certs/key.pem /usr/local/etc/jenkins/certs/key.pem
+
+# Make sure cert permissions are set correctly
+RUN chmod +r /usr/local/etc/jenkins/certs/ca.pem
+RUN chmod +r /usr/local/etc/jenkins/certs/cert.pem
+RUN chown -R jenkins:jenkins /usr/local/etc/jenkins
 
 #Switch to the jenkins user
 USER jenkins

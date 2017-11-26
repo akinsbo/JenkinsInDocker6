@@ -19,7 +19,7 @@ stop:
 clean:
 	@docker-compose -p jenkins rm master nginx
 
-clean-data: clean
+clean-data:
 	@docker-compose -p jenkins rm -v data
 
 clean-images:
