@@ -8,13 +8,16 @@ bouncycastle-api
 branch-api
 build-timeout
 checkstyle
+cloud-stats
 cloudbees-folder
 cloverphp
 crap4j
 credentials-binding
 credentials
 display-url-api
+docker-build-publish
 docker-commons
+docker-java-api
 docker-plugin
 docker-workflow
 dry
@@ -32,12 +35,13 @@ gradle
 handlebars
 htmlpublisher
 icon-shim
+jackson2-api
 javadoc
-jclouds-jenkins
 jdepend
 jquery-detached
 jsch
 junit
+kubernetes
 ldap
 mailer
 mapdb-api
@@ -71,6 +75,7 @@ structs
 subversion
 timestamper
 token-macro
+variant
 violations
 warnings
 windows-slaves
@@ -87,3 +92,4 @@ workflow-step-api
 workflow-support
 ws-cleanup
 xunit
+yet-another-docker-plugin

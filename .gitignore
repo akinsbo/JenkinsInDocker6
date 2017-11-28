@@ -67,3 +67,5 @@ nbproject
 # Docker Volume Folder
 data
 
+# nginx logs
+jenkins-nginx/logs
