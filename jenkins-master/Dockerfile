@@ -37,15 +37,12 @@ ARG agent_port=50000
 
  #jenkins version being bundled in this docker image
 ARG JENKINS_VERSION
-ENV JENKINS_VERSION ${JENKINS_VERSION:-2.60.3}
+ENV JENKINS_VERSION ${JENKINS_VERSION:-2.73.3}
 # jenkins.war checksum, download will be validated using it
-#ARG JENKINS_SHA=fcfb932a84ce03795abbf51ae7799439278155b0d42242d1d79a187034649fc8 jenkins.war
-ARG JENKINS_SHA=2d71b8f87c8417f9303a73d52901a59678ee6c0eefcf7325efed6035ff39372a
+#ARG JENKINS_SHA=2d71b8f87c8417f9303a73d52901a59678ee6c0eefcf7325efed6035ff39372a
 # Can be used to customize where jenkins.war get downloaded from
 RUN echo ${JENKINS_VERSION}
-#ARG JENKINS_URL=http://mirrors.jenkins.io/war-stable/${JENKINS_VERSION}/jenkins.war
 ARG JENKINS_URL=https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/${JENKINS_VERSION}/jenkins-war-${JENKINS_VERSION}.war
-RUN echo ${JENKINS_URL}
 
 ENV JENKINS_HOME /var/jenkins_home
 ENV JENKINS_SLAVE_AGENT_PORT ${agent_port}
@@ -61,7 +58,6 @@ ENV JENKINS_OPTS="--handlerCountMax=300 \
     --logfile=/var/log/jenkins/jenkins.log \
     --webroot=/var/cache/jenkins/war"
 
-
 # Jenkins is run with user `jenkins`, uid = 1000
 # If you bind mount a volume from the host or a data container,
 # ensure you use the same uid
@@ -76,12 +72,18 @@ VOLUME /var/jenkins_home
 # `/usr/share/jenkins/ref/` contains all reference configuration we want
 # to set on a fresh new installation. Use it to bundle additional plugins
 # or config file with your custom jenkins Docker image.
-RUN mkdir -p /usr/share/jenkins/ref/init.groovy.ds
+RUN mkdir -p /usr/share/jenkins/ref/init.groovy.d
 # could use ADD but this one does not check Last-Modified header neither does it allow to control checksum
 # see https://github.com/docker/docker/issues/8331
-RUN curl -fsSL ${JENKINS_URL} -o /usr/share/jenkins/jenkins.war \
-  && echo "${JENKINS_SHA}  /usr/share/jenkins/jenkins.war" | sha256sum -c -
 
+### Internet download: Uncomment below for direct internet download of jenkins
+#ENV JENKINS_VERSION ${JENKINS_VERSION:-2.60.3}
+#ARG JENKINS_URL=http://mirrors.jenkins.io/war-stable/${JENKINS_VERSION}/jenkins.war
+#RUN echo ${JENKINS_URL}
+#RUN curl -fsSL ${JENKINS_URL} -o /usr/share/jenkins/jenkins.war \
+#  && echo "${JENKINS_SHA}  /usr/share/jenkins/jenkins.war" | sha256sum -c -
+
+COPY resources/jenkins-war-${JENKINS_VERSION}.war /usr/share/jenkins/jenkins.war
 # Prep Jenkins Directories
 RUN chown -R ${user} "$JENKINS_HOME" /usr/share/jenkins/ref
 RUN mkdir /var/log/jenkins

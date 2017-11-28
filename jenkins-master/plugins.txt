@@ -15,6 +15,7 @@ credentials-binding
 credentials
 display-url-api
 docker-commons
+docker-java-api
 docker-plugin
 docker-workflow
 dry

@@ -9,7 +9,6 @@ check:
 # -p is the set-project-name option which we set to "jenkins"
 build:
 	@docker-compose -p jenkins build
-
 run:
 	@docker-compose -p jenkins up -d nginx data master
 
