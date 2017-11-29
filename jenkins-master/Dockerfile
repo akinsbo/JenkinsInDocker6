@@ -85,13 +85,13 @@ RUN mkdir -p /usr/share/jenkins/ref/init.groovy.d
 
 COPY resources/jenkins-war-${JENKINS_VERSION}.war /usr/share/jenkins/jenkins.war
 # Prep Jenkins Directories
-RUN chown -R ${user} "$JENKINS_HOME" /usr/share/jenkins/ref
-RUN mkdir /var/log/jenkins
+RUN chown -R ${user} "$JENKINS_HOME" /usr/share/jenkins/ref \
+    && mkdir /var/log/jenkins \
 # give jenkins user write permission via ownership
-RUN mkdir /var/cache/jenkins
-RUN chown -R  jenkins:jenkins /var/log/jenkins
+    && mkdir /var/cache/jenkins \
+    && chown -R  jenkins:jenkins /var/log/jenkins \
 # or RUN install -d -o jenkins -g jenkins -m 0770 /var/log/jenkins
-RUN chown -R jenkins:jenkins /var/cache/jenkins
+    && chown -R jenkins:jenkins /var/cache/jenkins
 
 #Expose Ports for web and slave agents
 # for main web interface:
@@ -104,10 +104,11 @@ COPY jenkins-support /usr/local/bin/jenkins-support
 COPY jenkins.sh /usr/local/bin/jenkins.sh
 
 # from a derived Dockerfile, can use `RUN plugins.sh active.txt` to setup /usr/share/jenkins/ref/plugins from a support bundle
+COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
 COPY plugins.sh /usr/local/bin/plugins.sh
 COPY install-plugins.sh /usr/local/bin/install-plugins.sh
-RUN chmod +x /usr/local/bin/plugins.sh
-RUN chmod +x /usr/local/bin/jenkins.sh
+RUN chmod +x /usr/local/bin/plugins.sh \
+    && chmod +x /usr/local/bin/jenkins.sh
 
 # `/usr/share/jenkins/ref/` contains all reference configuration we want
 # to set on a fresh new installation. Use it to bundle additional plugins
@@ -123,9 +124,9 @@ COPY certs/cert.pem /usr/local/etc/jenkins/certs/cert.pem
 COPY certs/key.pem /usr/local/etc/jenkins/certs/key.pem
 
 # Make sure cert permissions are set correctly
-RUN chmod +r /usr/local/etc/jenkins/certs/ca.pem
-RUN chmod +r /usr/local/etc/jenkins/certs/cert.pem
-RUN chown -R jenkins:jenkins /usr/local/etc/jenkins
+RUN chmod +r /usr/local/etc/jenkins/certs/ca.pem \
+    && chmod +r /usr/local/etc/jenkins/certs/cert.pem \
+    && chown -R jenkins:jenkins /usr/local/etc/jenkins
 
 #Switch to the jenkins user
 USER jenkins

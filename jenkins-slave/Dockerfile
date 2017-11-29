@@ -13,6 +13,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		wget \
                 && rm -rf /var/lib/apt/lists/*
 
+
+# Set SSH Configuration to allow remote logins without /proc write access
+RUN sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd
+
 # Create Jenkins User
 RUN useradd jenkins -m -s /bin/bash
 
@@ -22,10 +26,10 @@ RUN mkdir /home/jenkins/.ssh
 # This removes the need to create a password for this user, reducing risk on a
 # large farm
 COPY /files/authorized_keys /home/jenkins/.ssh/authorized_keys
-RUN chown -R jenkins /home/jenkins
-RUN chgrp -R jenkins /home/jenkins
-RUN chmod 600 /home/jenkins/.ssh/authorized_keys
-RUN chmod 700 /home/jenkins/.ssh
+RUN chown -R jenkins /home/jenkins \
+    && chgrp -R jenkins /home/jenkins \
+    && chmod 600 /home/jenkins/.ssh/authorized_keys \
+    && chmod 700 /home/jenkins/.ssh
 
 
 # Add the jenkins user to sudoers
